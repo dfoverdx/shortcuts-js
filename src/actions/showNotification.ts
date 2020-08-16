@@ -1,3 +1,4 @@
+import WFSerialization from '../interfaces/WF/WFSerialization';
 import WFWorkflowAction from '../interfaces/WF/WFWorkflowAction';
 
 /**
@@ -23,16 +24,16 @@ const showNotification = (
     sound = true,
   }: {
     /** Title for the notification */
-    title ?: string,
+    title?: string | WFSerialization,
     /** Body for the notification */
-    body ?: string,
+    body?: string | WFSerialization,
     /** Enable or disable sound for the notification */
-    sound ?: boolean,
+    sound?: boolean,
   },
 ): WFWorkflowAction => ({
   WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
   WFWorkflowActionParameters: {
-    WFNotificationActionTitle: title,
+    ...(title && { WFNotificationActionTitle: title }),
     WFNotificationActionBody: body,
     WFNotificationActionSound: sound,
   },

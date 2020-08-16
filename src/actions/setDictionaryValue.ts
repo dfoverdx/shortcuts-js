@@ -1,6 +1,7 @@
-import { withActionOutput } from '../utils';
-
+import Variable from '../interfaces/Variable';
+import WFSerialization from '../interfaces/WF/WFSerialization';
 import WFWorkflowAction from '../interfaces/WF/WFWorkflowAction';
+import { withActionOutput } from '../utils';
 
 /**
  * @action Set Dictionary Value
@@ -13,6 +14,7 @@ import WFWorkflowAction from '../interfaces/WF/WFWorkflowAction';
  * setDictionaryValue({
  *   key: 'testKey',
  *   value: 'testValue',
+ *   inDict: myDictionaryVariable,
  * });
  * ```
  */
@@ -21,17 +23,20 @@ const setDictionaryValue = (
   {
     key = '',
     value = '',
+    inDict,
   }: {
     /** The key to set */
-    key?: string,
+    key?: string | WFSerialization,
     /** The value to set */
-    value?: string,
+    value?: string | number | WFSerialization,
+    inDict?: Variable,
   },
 ): WFWorkflowAction => ({
   WFWorkflowActionIdentifier: 'is.workflow.actions.setvalueforkey',
   WFWorkflowActionParameters: {
     WFDictionaryKey: key,
     WFDictionaryValue: value,
+    ...(inDict && { WFDictionary: inDict }),
   },
 });
 

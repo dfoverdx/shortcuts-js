@@ -1,5 +1,5 @@
 import * as uuidv4 from 'uuid/v4';
-
+import Variable from '../interfaces/Variable';
 import WFCondition from '../interfaces/WF/WFCondition';
 import WFWorkflowAction from '../interfaces/WF/WFWorkflowAction';
 import { withActionOutput } from '../utils';
@@ -9,6 +9,8 @@ const conditionMap = new Map([
   ['=', 'Equals'],
   ['<', 'Is Less Than'],
   ['>', 'Is Greater Than'],
+  ['<=', 'Is Less Than or Equal To'],
+  ['>=', 'Is Greater Than or Equal To'],
 ]);
 
 /**
@@ -30,7 +32,7 @@ const conditionMap = new Map([
  *       text: 'Do something different when false',
  *     }),
  *   ],
- *   input: '<',
+ *   test: '<',
  *   value: 27,
  * });
  * ```
@@ -38,25 +40,29 @@ const conditionMap = new Map([
 
 const conditional = (
   {
+    input,
     ifTrue = [],
     ifFalse = [],
-    input = 'Contains',
+    test = 'Contains',
     value = 'example',
   }: {
+    input?: Variable,
     /** An array of actions to perform if condition is true */
     ifTrue?: WFWorkflowAction[],
     /** An array of actions to perform if condition is false */
     ifFalse?: WFWorkflowAction[],
     /** The test to perform on the input */
-    input?: (
+    test?: (
       WFCondition
       | 'Contains'
       | '='
       | '<'
       | '>'
+      | '<='
+      | '>='
     ),
     /** The value to test the input against */
-    value?: string | number,
+    value?: string | number | Variable,
   },
 ): WFWorkflowAction[] => {
   const groupingIdentifier = uuidv4();
@@ -69,32 +75,31 @@ const conditional = (
     },
   };
 
-  if (input && input !== 'Contains') {
-    const condition = (conditionMap.get(input) || input) as WFCondition;
+  if (input) {
+    ifAction.WFWorkflowActionParameters.WFInput = input;
+  }
+
+  const inputIsString = test === 'Contains';
+
+  if (test && !inputIsString) {
+    const condition = (conditionMap.get(test) || test) as WFCondition;
     ifAction.WFWorkflowActionParameters.WFCondition = condition;
   }
 
   // Add correct property for string or number value
-  if (value) {
-    if (typeof value === typeof 0) {
+  if (value || value === 0) {
+    if (!inputIsString) {
       ifAction.WFWorkflowActionParameters.WFNumberValue = value as number;
     } else {
       ifAction.WFWorkflowActionParameters.WFConditionalActionString = value as string;
     }
   }
 
-  // Open the 'if' block
+  // Open the 'if' block and add ifTrue actions
   let actionArr: WFWorkflowAction[] = [
     ifAction,
+    ...ifTrue,
   ];
-
-  // If we've got some ifTrue actions, append them
-  if (ifTrue.length > 0) {
-    actionArr = [
-      ...actionArr,
-      ...ifTrue,
-    ];
-  }
 
   // If we've got some ifFalse actions, add an 'else' and append the ifFalse actions
   if (ifFalse.length > 0) {

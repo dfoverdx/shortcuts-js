@@ -1,13 +1,7 @@
 import { conditional } from '../../src/actions';
-
-import {
-  testActions,
-} from '../_fixtures/actions';
-import {
-  compareObjectsWithGroupingIdentifier,
-} from '../_helpers/compareObjectsWithGroupingIdentifier';
-
 import WFWorkflowAction from '../../src/interfaces/WF/WFWorkflowAction';
+import { testActions } from '../_fixtures/actions';
+import { compareObjectsWithGroupingIdentifier } from '../_helpers/compareObjectsWithGroupingIdentifier';
 
 describe('conditional function', () => {
 
@@ -160,7 +154,7 @@ describe('conditional function', () => {
 
   it('builds a conditional action when a built-in input property is passed', () => {
     const actual = conditional({
-      input: 'Is Greater Than',
+      test: 'Is Greater Than',
       value: 22,
     });
     const expected: WFWorkflowAction[] = [
@@ -183,9 +177,9 @@ describe('conditional function', () => {
     compareObjectsWithGroupingIdentifier(actual, expected);
   });
 
-  it('builds a conditional action when \'<\' input property is passed', () => {
+  it('builds a conditional action when \'<\' test property is passed', () => {
     const actual = conditional({
-      input: '<',
+      test: '<',
       value: 7,
     });
 
@@ -211,7 +205,7 @@ describe('conditional function', () => {
 
   it('builds a conditional action when \'=\' input property is passed', () => {
     const actual = conditional({
-      input: '=',
+      test: '=',
       value: 12,
     });
 
@@ -235,7 +229,7 @@ describe('conditional function', () => {
     compareObjectsWithGroupingIdentifier(actual, expected);
   });
 
-  it('builds a if action when value is falsey', () => {
+  it('builds a if action when value is falsy', () => {
     const actual = conditional({
       value: '',
     });

@@ -9,7 +9,6 @@ describe('showNotification function', () => {
     const expected = {
       WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
       WFWorkflowActionParameters: {
-        WFNotificationActionTitle: '',
         WFNotificationActionBody: 'Hello World',
         WFNotificationActionSound: true,
       },
@@ -24,7 +23,6 @@ describe('showNotification function', () => {
     const expected = {
       WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
       WFWorkflowActionParameters: {
-        WFNotificationActionTitle: '',
         WFNotificationActionBody: bodyString,
         WFNotificationActionSound: true,
       },
@@ -38,11 +36,9 @@ describe('showNotification function', () => {
   });
 
   it('builds a showNotification action when sound is set to false', () => {
-
     const expected = {
       WFWorkflowActionIdentifier: 'is.workflow.actions.notification',
       WFWorkflowActionParameters: {
-        WFNotificationActionTitle: '',
         WFNotificationActionBody: 'Hello World',
         WFNotificationActionSound: false,
       },

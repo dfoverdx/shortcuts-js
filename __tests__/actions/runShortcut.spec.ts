@@ -1,3 +1,4 @@
+import { variable } from '../../src';
 import { runShortcut } from '../../src/actions';
 
 describe('runShortcut function', () => {
@@ -40,4 +41,22 @@ describe('runShortcut function', () => {
     expect(actual).toEqual(expected);
   });
 
+  it('builds a runShortcut action when name and input are passed', () => {
+    const name = 'Some Shortcut';
+    const input = variable('some var');
+    const expected = {
+      WFWorkflowActionIdentifier: 'is.workflow.actions.runworkflow',
+      WFWorkflowActionParameters: {
+        WFWorkflowName: name,
+        WFShowWorkflow: false,
+        WFInput: input,
+      },
+    };
+    const actual = runShortcut({
+      name,
+      input,
+    });
+
+    expect(actual).toEqual(expected);
+  });
 });
